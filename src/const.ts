@@ -1,1 +1,0 @@
-export const reownProjectId = import.meta.env.VITE_REOWN_PROJECT_ID
