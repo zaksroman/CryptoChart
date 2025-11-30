@@ -219,10 +219,9 @@ export default function CryptoChart() {
         }
     };
 
-
-
     return (
         <div style={{ width: '100%', height: '55%', background: 'transparent', overflow: 'visible' }}>
+            {/*// @ts-expect-error*/}
             <Line data={chartData} options={chartOptions} plugins={[lastPointPlugin]} />
         </div>
 );
