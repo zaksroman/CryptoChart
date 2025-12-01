@@ -1,6 +1,6 @@
-import Box from "@mui/material/Box";
 import TimeFrameButton from "../buttons/timeFrameButton/TimeFrameButton.tsx";
 import {useSelectTimeFrameStore} from "../../hooks/store/store.ts";
+import {ButtonsRow, ButtonsRoot} from "./TimeFrames.styled.ts";
 
 
 const timeFramesConfig = ['15S', '1M', '1H', '1D'] as const;
@@ -16,32 +16,19 @@ const TimeFrames = () => {
     }
 
     return (
-        <Box sx={{
-            display: "flex",
-            width: '100%',
-            padding: '5px 12px',
-            justifyContent: "center",
-            alignItems: "center",
-        }}>
-            <Box sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-                gap: 1,
-            }}>
-                {timeFramesConfig.map((item) => (
+        <ButtonsRoot>
+            <ButtonsRow>
+                {timeFramesConfig.map(item => (
                     <TimeFrameButton
                         key={item}
                         logo={item}
                         onClick={() => handleSelectTimeFrame(item)}
-                        isSelected = { item === timeFrame }
+                        isSelected={item === timeFrame}
                     />
                 ))}
-            </Box>
-        </Box>
-    );
+            </ButtonsRow>
+        </ButtonsRoot>
+    )
 };
 
 export default TimeFrames;

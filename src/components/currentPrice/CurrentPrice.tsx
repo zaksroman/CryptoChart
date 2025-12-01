@@ -1,5 +1,5 @@
-import Box from "@mui/material/Box";
 import {useCurrentPriceStore} from "../../hooks/store/store.ts";
+import {DecimalPart, Difference, IntPart, Wrapper} from "./CurrentPrice.styled.ts";
 
 const formatPrice = (price: string) => {
 
@@ -18,22 +18,11 @@ const CurrentPrice = () => {
     const { intWithCommas, decimalPart } = formatPrice(price);
 
     return (
-        <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-            <span style={{ fontFamily: 'Geist', fontSize: '30px', color: 'white' }}>
-                {intWithCommas}
-            </span>
-            <span style={{ fontFamily: 'Geist', fontSize: '30px', color: 'gray' }}>
-                .{decimalPart}
-            </span>
-            <span style={{
-                fontFamily: 'Geist',
-                fontSize: '18px',
-                marginLeft: '8px',
-                color: difference.startsWith('+') ? 'rgba(151, 252, 166, 0.9)' : 'rgba(252,151,170,0.9)' }}
-            >
-                {difference}%
-            </span>
-        </Box>
+        <Wrapper>
+            <IntPart>{intWithCommas}</IntPart>
+            <DecimalPart>.{decimalPart}</DecimalPart>
+            <Difference difference={difference}>{difference}%</Difference>
+        </Wrapper>
     );
 };
 

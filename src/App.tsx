@@ -10,6 +10,7 @@ import AddPosition from "./components/buttons/addPosition/AddPosition.tsx";
 import BottomMenu from "./components/bottomMenu/BottomMenu.tsx";
 import CryptoChart from "./components/chart/CryptoChart.tsx";
 import TimeFrames from "./components/timeFrames/TimeFrames.tsx";
+import {HeaderContainer} from "./App.styled.ts";
 
 function App() {
 
@@ -30,41 +31,20 @@ function App() {
 
     return (
         <Container>
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%',
-                gap: '12px',
-                padding: '10px',
-                boxSizing: 'border-box',
-            }}>
-                <Box sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                }}>
+            <HeaderContainer>
+                <Box className="topRow">
                     <SelectCrypto menuItems={menuItems}/>
                     <ConnectButton/>
                 </Box>
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    width: '100%',
-                    justifyContent: 'space-between'
-                }}>
+
+                <Box className="bottomRow">
                     <CurrentPrice/>
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        gap: '8px'
-                    }}>
+                    <Box className="actions">
                         <LikeButton/>
                         <SettingButton/>
                     </Box>
                 </Box>
-            </Box>
+            </HeaderContainer>
 
             <CryptoChart/>
             <TimeFrames/>

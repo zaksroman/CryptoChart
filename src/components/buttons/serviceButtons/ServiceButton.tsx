@@ -1,3 +1,4 @@
+import {StyledServiceButton} from "./ServiceButton.styled.ts";
 
 
 interface ServiceButtonProps {
@@ -5,24 +6,8 @@ interface ServiceButtonProps {
     onClick?: () => void;
 }
 
-const ServiceButton = ({ children, onClick }: ServiceButtonProps) => {
-    return (
-        <button
-            onClick={onClick}
-            style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '39.2px',
-                height: '36px',
-                backgroundColor: '#222222',
-                borderRadius: '8px',
-                cursor: 'pointer'
-            }}
-        >
-            {children}
-        </button>
-    );
-};
+const ServiceButton = ({ children, onClick }: ServiceButtonProps) =>(
+    <StyledServiceButton onClick={onClick}>{children}</StyledServiceButton>
+);
 
 export default ServiceButton;
