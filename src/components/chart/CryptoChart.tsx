@@ -1,4 +1,3 @@
-import {useCallback, useEffect, useState} from 'react';
 import { Line } from 'react-chartjs-2';
 import {
     Chart,
@@ -8,73 +7,22 @@ import {
     PointElement,
     Filler,
     Tooltip,
+    type ScriptableContext,
+    type ChartOptions
 } from 'chart.js';
+import {useGetMockData} from "../../hooks/helpers/useGetMockData.ts";
 
 Chart.register(LineElement, CategoryScale, LinearScale, PointElement, Filler, Tooltip);
 
 
 export default function CryptoChart() {
-    const timeframe: '15s' | '1m' | '1h' | '1d' = '15s';
 
-    const formatDate = useCallback((tf: typeof timeframe, d: Date) => {
-        const pad = (n: number) => String(n).padStart(2, '0');
+    const {dataPoints} = useGetMockData()
 
-        const MM = pad(d.getMonth() + 1);
-        const DD = pad(d.getDate());
-        const hh = pad(d.getHours());
-        const mm = pad(d.getMinutes());
-        const ss = pad(d.getSeconds());
-
-        if (tf === '15s') return `${hh}:${mm}:${ss}`;
-        if (tf === '1m') return `${hh}:${mm}`;
-        if (tf === '1h') return `${MM}/${DD} ${hh}:${mm}`;
-        return `${MM}/${DD}`;
-    }, [timeframe]);
-
-    const [dataPoints, setDataPoints] = useState(() => {
-        const arr = [];
-        let value = 90000;
-        const now = new Date();
-
-        for (let i = 0; i < 50; i++) {
-            const date = new Date(now.getTime() - (50 - i) * 1000);
-
-            arr.push({
-                price: value,
-                date: formatDate(timeframe, date)
-            });
-
-            const changeMockData = Math.random() * 0.10 - 0.05
-            value +=Number((value * changeMockData).toFixed(2));
-        }
-        return arr;
-    });
-
-    useEffect(() => {
-        const generateNext = () => {
-            setDataPoints(prev => {
-                const lastPrice = prev[prev.length - 1].price;
-                const change = Math.random() * 0.10 - 0.05;
-                const nextPrice = +(lastPrice + lastPrice * change).toFixed(2);
-
-                return [
-                    ...prev.slice(1),
-                    {
-                        price: nextPrice,
-                        date: formatDate(timeframe, new Date())
-                    }
-                ];
-            });
-        };
-
-        const timer = setInterval(generateNext, 3000);
-        return () => clearInterval(timer);
-    }, [formatDate]);
-
-    const arrPrices = dataPoints.map(i => i.price);
+    const arrPrices = dataPoints.map(item => item.price);
 
     const chartData = {
-        labels: dataPoints.map(i => i.date),
+        labels: dataPoints.map(item => item.date),
         datasets: [
             {
                 data: arrPrices,
@@ -83,21 +31,13 @@ export default function CryptoChart() {
                 pointRadius: 0,
                 tension: 0.2,
                 fill: true,
-                backgroundColor: (ctx: { chart: Chart }) => {
+                backgroundColor: (ctx: ScriptableContext<"line">) => {
                     const chart = ctx.chart;
-                    const { ctx: canvas, chartArea } = chart;
+                    const ctx2 = chart.ctx;
 
-                    if (!chartArea) return null;
-
-                    const gradient = canvas.createLinearGradient(
-                        0,
-                        chartArea.top,
-                        0,
-                        chartArea.bottom
-                    );
-
-                    gradient.addColorStop(0, 'rgba(236, 189, 117,0.35)');
-                    gradient.addColorStop(0.3, 'rgba(236, 189, 117, 0.1)');
+                    const gradient = ctx2.createLinearGradient(0, 0, 0, 300);
+                    gradient.addColorStop(0, 'rgba(236, 189, 117, 0.35)');
+                    gradient.addColorStop(0.3, 'rgba(236, 189, 117, 0.15)');
                     gradient.addColorStop(1, 'rgba(236, 189, 117,0)');
 
                     return gradient;
@@ -106,9 +46,12 @@ export default function CryptoChart() {
         ]
     };
 
-    const chartOptions = {
+    const chartOptions: ChartOptions<'line'> = {
         responsive: true,
-        interaction: { mode: false },
+        interaction: {
+            mode: 'nearest',
+            intersect: false
+        },
         plugins: {
             legend: { display: false },
             tooltip: { enabled: false },
@@ -120,12 +63,11 @@ export default function CryptoChart() {
         },
         scales: {
             x: {
-                drawBorder: true,
                 border: { color: 'rgba(129, 139, 166, 0.2)' },
                 ticks: {
                     display: true,
                     color: 'rgba(129, 139, 166, 0.2)',
-                    maxTicksLimit: 6
+                    maxTicksLimit: 4
                 },
                 grid: {
                     drawTicks: true,
@@ -135,7 +77,6 @@ export default function CryptoChart() {
                 },
             },
             y: {
-                drawBorder: true,
                 border: { color: 'rgba(129, 139, 166, 0.2)' },
                 position: 'right',
                 grid: {
@@ -151,8 +92,8 @@ export default function CryptoChart() {
                 },
             },
         },
+        animation: false,
         maintainAspectRatio: false,
-        animations: false,
     };
 
     const lastPointPlugin = {
@@ -180,7 +121,7 @@ export default function CryptoChart() {
             ctx.lineTo(chart.chartArea.right, y);
             ctx.stroke();
 
-            // Текст рядом с точкой
+
             const paddingX = 6;
             const radius = 4;
 
@@ -188,14 +129,14 @@ export default function CryptoChart() {
             ctx.textBaseline = 'middle';
             ctx.textAlign = 'left';
 
-            // вычисляем ширину текста
+
             const textWidth = ctx.measureText(value).width;
             const boxX = x + 6;
             const boxY = y - 8;
             const boxWidth = textWidth + paddingX * 2;
             const boxHeight = 16;
 
-            // рисуем закруглённый фон
+
             ctx.beginPath();
             ctx.fillStyle = 'rgba(151, 252, 166, 1)';
             ctx.strokeStyle = 'rgba(151, 252, 166, 1)';
@@ -221,9 +162,8 @@ export default function CryptoChart() {
 
     return (
         <div style={{ width: '100%', height: '55%', background: 'transparent', overflow: 'visible' }}>
-            {/*// @ts-expect-error*/}
             <Line data={chartData} options={chartOptions} plugins={[lastPointPlugin]} />
         </div>
-);
+    );
 }
 

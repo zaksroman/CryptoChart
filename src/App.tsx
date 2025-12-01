@@ -9,6 +9,7 @@ import CurrentPrice from "./components/currentPrice/CurrentPrice.tsx";
 import AddPosition from "./components/buttons/addPosition/AddPosition.tsx";
 import BottomMenu from "./components/bottomMenu/BottomMenu.tsx";
 import CryptoChart from "./components/chart/CryptoChart.tsx";
+import TimeFrames from "./components/timeFrames/TimeFrames.tsx";
 
 function App() {
 
@@ -66,6 +67,7 @@ function App() {
             </Box>
 
             <CryptoChart/>
+            <TimeFrames/>
             <AddPosition/>
             <BottomMenu/>
         </Container>
